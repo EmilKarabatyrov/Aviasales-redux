@@ -74,9 +74,9 @@ export function TicketsList() {
   const filteredTickets = tickets.filter(filterTickets);
   const finalSortedTickets = sortedTickets(filteredTickets);
 
-  const jsonObject = finalSortedTickets.map(JSON.stringify);
-  const uniqueSet = new Set(jsonObject);
-  const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+  // const jsonObject = finalSortedTickets.map(JSON.stringify);
+  // const uniqueSet = new Set(jsonObject);
+  // const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
 
   return (
     <div className="ticketslist">
@@ -116,7 +116,7 @@ export function TicketsList() {
             Рейсов, подходящих под заданные фильтры, не найдено
           </div>
         )}
-      {uniqueArray.slice(0, value).map((ticket, index) => (
+      {finalSortedTickets.slice(0, value).map((ticket, index) => (
         <Ticket key={index} ticket={ticket} />
       ))}
       <ShowMore />
