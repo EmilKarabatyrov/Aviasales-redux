@@ -74,10 +74,6 @@ export function TicketsList() {
   const filteredTickets = tickets.filter(filterTickets);
   const finalSortedTickets = sortedTickets(filteredTickets);
 
-  // const jsonObject = finalSortedTickets.map(JSON.stringify);
-  // const uniqueSet = new Set(jsonObject);
-  // const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-
   return (
     <div className="ticketslist">
       <div className="tabs">
