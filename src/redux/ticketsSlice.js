@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   error: "",
   errorCount: 0,
+  noInternet: false,
 };
 
 export const fetchTickets = createAsyncThunk(
@@ -40,6 +41,9 @@ const ticketsSlice = createSlice({
     increaseValue: (state) => {
       state.value += 5;
     },
+    setNoInternet: (state, action) => {
+      state.noInternet = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -53,7 +57,7 @@ const ticketsSlice = createSlice({
         state.searchId = searchId;
         state.loading = false;
         state.error = "";
-        state.errorCount += 0;
+        state.errorCount = 0;
       })
       .addCase(fetchTickets.rejected, (state, action) => {
         state.loading = false;
@@ -64,5 +68,5 @@ const ticketsSlice = createSlice({
   },
 });
 
-export const { increaseValue } = ticketsSlice.actions;
+export const { increaseValue, setNoInternet } = ticketsSlice.actions;
 export default ticketsSlice.reducer;
