@@ -8,7 +8,6 @@ const initialState = {
   loading: false,
   error: "",
   errorCount: 0,
-  noInternet: false,
 };
 
 export const fetchTickets = createAsyncThunk(
@@ -40,9 +39,6 @@ const ticketsSlice = createSlice({
   reducers: {
     increaseValue: (state) => {
       state.value += 5;
-    },
-    setNoInternet: (state, action) => {
-      state.noInternet = action.payload;
     },
   },
   extraReducers: (builder) => {

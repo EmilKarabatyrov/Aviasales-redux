@@ -4,24 +4,21 @@ import { Ticket } from "./Ticket/Ticket";
 import { useSelector, useDispatch } from "react-redux";
 import { setSort } from "../../redux/sortSlice";
 import React, { useEffect } from "react";
-import { fetchTickets, setNoInternet } from "../../redux/ticketsSlice";
+import { fetchTickets } from "../../redux/ticketsSlice";
 import { Flex, Spin } from "antd";
 
 export function TicketsList() {
   const dispatch = useDispatch();
   const { sort } = useSelector((state) => state.sort);
   const filter = useSelector((state) => state.filter);
-  const { tickets, stop, searchId, value, errorCount, noInternet } =
-    useSelector((state) => state.tickets);
+  const { tickets, stop, searchId, value, errorCount } = useSelector(
+    (state) => state.tickets,
+  );
 
   useEffect(() => {
-    if (!navigator.onLine) {
-      dispatch(setNoInternet(true));
-    } else {
-      dispatch(setNoInternet(false));
-    }
-    if (!stop && errorCount < 6 && !noInternet)
+    if (!stop && errorCount < 6) {
       dispatch(fetchTickets(searchId));
+    }
   }, [dispatch, tickets, stop, searchId]);
 
   const filterTickets = (ticket) => {
@@ -120,7 +117,6 @@ export function TicketsList() {
       {finalSortedTickets.slice(0, value).map((ticket, index) => (
         <Ticket key={index} ticket={ticket} />
       ))}
-      <ShowMore />
     </div>
   );
 }

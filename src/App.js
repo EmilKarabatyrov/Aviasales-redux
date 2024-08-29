@@ -3,21 +3,29 @@ import { Header } from "./components/Header/Header";
 import { Filter } from "./components/Filter/Filter";
 import { TicketsList } from "./components/TicketsList/TicketsList";
 import { Offline, Online } from "react-detect-offline";
+import { Alert } from "antd";
 
 function App() {
   return (
-    <div className="aviasales">
+    <>
       <Online>
-        <Header />
-        <div className="aviasales__main">
-          <Filter />
-          <TicketsList />
+        <div className="aviasales">
+          <Header />
+          <div className="aviasales__main">
+            <Filter />
+            <TicketsList />
+          </div>
         </div>
       </Online>
       <Offline>
-        <div>Sorry</div>
+        <Alert
+          showIcon
+          message="Sorry, there was an error, check your internet connection"
+          type="error"
+        />
       </Offline>
-    </div>
+    </>
   );
 }
+
 export default App;
