@@ -11,13 +11,14 @@ export function TicketsList() {
   const dispatch = useDispatch();
   const { sort } = useSelector((state) => state.sort);
   const filter = useSelector((state) => state.filter);
-  const { tickets, stop, searchId, value } = useSelector(
+  const { tickets, stop, searchId, value, errorCount } = useSelector(
     (state) => state.tickets,
   );
+  console.log(errorCount);
 
   useEffect(() => {
-    if (!stop) dispatch(fetchTickets(searchId));
-  }, [dispatch , tickets, stop, searchId]);
+    if (!stop && errorCount < 6) dispatch(fetchTickets(searchId));
+  }, [dispatch, tickets, stop, searchId]);
 
   const filterTickets = (ticket) => {
     const stops = ticket.segments.reduce(

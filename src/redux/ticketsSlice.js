@@ -7,13 +7,13 @@ const initialState = {
   value: 5,
   loading: false,
   error: "",
+  errorCount: 0,
 };
 
 export const fetchTickets = createAsyncThunk(
   "tickets/fetchTickets",
   async function fetchThunk(id) {
     let searchId = id;
-
     if (!searchId) {
       searchId = await fetch("https://aviasales-test-api.kata.academy/search")
         .then((response) => response.json())
@@ -53,11 +53,13 @@ const ticketsSlice = createSlice({
         state.searchId = searchId;
         state.loading = false;
         state.error = "";
+        state.errorCount += 0;
       })
       .addCase(fetchTickets.rejected, (state, action) => {
         state.loading = false;
         state.tickets = [];
         state.error = action.error.message;
+        state.errorCount += 1;
       });
   },
 });
