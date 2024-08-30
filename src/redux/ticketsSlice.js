@@ -13,6 +13,10 @@ const initialState = {
 export const fetchTickets = createAsyncThunk(
   "tickets/fetchTickets",
   async function fetchThunk(id) {
+    if (!navigator.onLine) {
+      console.error("Currently offline. Cannot fetch tickets.");
+      throw new Error("No internet connection");
+    }
     let searchId = id;
     if (!searchId) {
       searchId = await fetch("https://aviasales-test-api.kata.academy/search")
@@ -25,7 +29,12 @@ export const fetchTickets = createAsyncThunk(
     try {
       tickets = await fetch(
         `https://aviasales-test-api.kata.academy/tickets?searchId=${searchId}`,
-      ).then((response) => response.json());
+      ).then((response) => {
+        if (response.status !== 200) {
+          throw Error("failed to fetch tickets");
+        }
+        return response.json();
+      });
     } catch (error) {
       tickets = await fetchThunk(searchId);
     }
@@ -53,7 +62,6 @@ const ticketsSlice = createSlice({
         state.searchId = searchId;
         state.loading = false;
         state.error = "";
-        state.errorCount = 0;
       })
       .addCase(fetchTickets.rejected, (state, action) => {
         state.loading = false;
@@ -64,5 +72,5 @@ const ticketsSlice = createSlice({
   },
 });
 
-export const { increaseValue, setNoInternet } = ticketsSlice.actions;
+export const { increaseValue } = ticketsSlice.actions;
 export default ticketsSlice.reducer;

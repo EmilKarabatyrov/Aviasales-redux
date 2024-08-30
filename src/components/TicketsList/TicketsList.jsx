@@ -5,47 +5,57 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSort } from "../../redux/sortSlice";
 import React, { useEffect } from "react";
 import { fetchTickets } from "../../redux/ticketsSlice";
+import { setNetwork } from "../../redux/networkSlice";
 import { Flex, Spin } from "antd";
 
 export function TicketsList() {
   const dispatch = useDispatch();
   const { sort } = useSelector((state) => state.sort);
   const filter = useSelector((state) => state.filter);
+
   const { tickets, stop, searchId, value, errorCount } = useSelector(
     (state) => state.tickets,
   );
+  const { isOnline } = useSelector((state) => state.network);
 
   useEffect(() => {
-    if (!stop && errorCount < 6) {
+    if (navigator.onLine) {
+      dispatch(setNetwork(true));
+    } else {
+      dispatch(setNetwork(false));
+    }
+
+    if (!stop && isOnline && errorCount < 9) {
       dispatch(fetchTickets(searchId));
     }
-  }, [dispatch, tickets, stop, searchId]);
-
+  }, [tickets, stop, searchId]);
   const filterTickets = (ticket) => {
-    const stops = ticket.segments.reduce(
-      (acc, segment) => acc + segment.stops.length,
-      0,
-    );
-    if (
-      !filter.all &&
-      !filter.withoutTransfers &&
-      !filter.oneTransfers &&
-      !filter.twoTransfers &&
-      !filter.threeTransfers
-    ) {
-      return false;
-    }
-    if (filter.withoutTransfers && stops === 0) {
-      return true;
-    }
-    if (filter.oneTransfers && stops === 1) {
-      return true;
-    }
-    if (filter.twoTransfers && stops === 2) {
-      return true;
-    }
-    if (filter.threeTransfers && stops === 3) {
-      return true;
+    if (tickets) {
+      const stops = ticket.segments.reduce(
+        (acc, segment) => acc + segment.stops.length,
+        0,
+      );
+      if (
+        !filter.all &&
+        !filter.withoutTransfers &&
+        !filter.oneTransfers &&
+        !filter.twoTransfers &&
+        !filter.threeTransfers
+      ) {
+        return false;
+      }
+      if (filter.withoutTransfers && stops === 0) {
+        return true;
+      }
+      if (filter.oneTransfers && stops === 1) {
+        return true;
+      }
+      if (filter.twoTransfers && stops === 2) {
+        return true;
+      }
+      if (filter.threeTransfers && stops === 3) {
+        return true;
+      }
     }
     return false;
   };
@@ -98,7 +108,7 @@ export function TicketsList() {
           Оптимальный
         </button>
       </div>
-      {!stop && (
+      {!stop && isOnline && (
         <div className="spin">
           <Flex align="center" gap="middle">
             <Spin size="large" />
@@ -117,6 +127,7 @@ export function TicketsList() {
       {finalSortedTickets.slice(0, value).map((ticket, index) => (
         <Ticket key={index} ticket={ticket} />
       ))}
+      {finalSortedTickets.length !== 0 ? <ShowMore /> : null}
     </div>
   );
 }
